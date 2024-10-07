@@ -1,0 +1,29 @@
+
+#!/bin/bash
+#$ -pe smp 16
+#$ -cwd
+#$ -l h_rt=48:0:0
+#$ -l h_vmem=6G
+#$ -m bea
+
+module load wtdbg2/2.5
+
+
+wtdbg2 -i /data/home/bt21625/MSC/2024_10_7_Assembly/input/reads_for_assembly.fq.gz \
+       -g 399M \
+       -o /data/home/bt21625/MSC/2024_10_7_Assembly/tmp/assembly_graph.gfa \
+       -t ${NSLOTS} \
+       -p 19 -S 1 -K 0.30 -A -s 0.05 -L 5000
+# Derive consensus sequence for the contigs using wtpoa-cns
+wtpoa-cns -i /data/home/bt21625/MSC/2024_10_7_Assembly/tmp/assembly_graph.gfa \
+          -o /data/home/bt21625/MSC/2024_10_7_Assembly/tmp/assembly.fasta \
+          -t ${NSLOTS}
+# Perform assembly polishing using wtdbg2-cns to produce the final FASTA file
+wtdbg2-cns -t ${NSLOTS} \
+           -i /data/home/bt21625/MSC/2024_10_7_Assembly/tmp/assembly_graph.gfa \
+           -o /data/home/bt21625/MSC/2024_10_7_Assembly/output/assembly_polished.fasta
+# Run BUSCO analysis to assess assembly quality
+busco -i /data/home/bt21625/MSC/2024_10_7_Assembly/output/assembly_polished.fasta \
+      -o /data/home/bt21625/MSC/2024_10_7_Assembly/output/busco_report \
+      -l insecta_odb10 \
+      -m genome
