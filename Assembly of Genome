@@ -16,6 +16,6 @@ wtdbg2 -i /data/home/bt21625/MSC/2024_10_7_Assembly/input/reads_for_assembly.fq.
        -p 19 -S 1 -K 0.30 -A -s 0.05 -L 5000
 # Derive consensus sequence for the contigs using wtpoa-cns
 wtpoa-cns -i /data/home/bt21625/MSC/2024_10_7_Assembly/tmp/assembly_graph.ctg.lay.gz \
-          -o /data/home/bt21625/MSC/2024_10_7_Assembly/tmp/assembly.fasta \
+          -o /data/home/bt21625/MSC/2024_10_7_Assembly/tmp/assembly.ctg.fa \
           -t ${NSLOTS}
 
