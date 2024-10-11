@@ -1,0 +1,17 @@
+#!/bin/bash
+#$ -pe smp 3
+#$ -cwd
+#$ -l h_rt=72:0:0
+#$ -l h_vmem=10G
+#$ -m bea
+
+module load bowtie2
+module load samtools
+
+bowtie2-build  /data/home/bt21625/MSC/2024_10_8_Assembly/tmp/assembly_output.ctg.fa /data/home/bt21625/MSC/2024_10_10_Mapping/tmp/Bowtie_build_output
+
+bowtie2 --local -x tmp/Bowtie_build_output -1 inputs/reads_for_mapping.R1.fq.gz -2 inputs/reads_for_mapping.R2.fq.gz  > /tmp/Alignments/Reads.sam
+
+samtools sort -O BAM /data/home/bt21625/MSC/2024_10_10_Mapping/tmp/Alignments/Reads.sam > /data/home/bt21625/MSC/2024_10_10_Mapping/tmp/Alignments/Reads_sorted.bam
+
+samtools index /data/home/bt21625/MSC/2024_10_10_Mapping/tmp/Alignments/Reads_sorted.bam
